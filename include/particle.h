@@ -20,6 +20,9 @@
 	Vector2 velocity;
 	Vector2 forceAccum;
 	Vector2 acceleration;
+	int ID;
+	bool collisionStatus;
+	float red, green, blue;
     
 	public:
 		void integrate(float duration);
@@ -51,6 +54,20 @@
 
 		void clearAccumulator();
 		void addForce(const Vector2 &force);
+
+		int getID();
+		void setID(int i);
+
+		bool getCollisionStatus();
+		void setCollisionStatus(bool c);
+
+		float getRed();
+		float getGreen();
+		float getBlue();
+
+		void setRed(float r);
+		void setGreen(float g);
+		void setBlue(float b);
 	
        };
 

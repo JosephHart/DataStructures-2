@@ -151,3 +151,24 @@ void Particle::addForce(const Vector2 &force)
     forceAccum += force;
 }
 
+int Particle::getID()
+{
+	return ID;
+}
+
+void Particle::setID(int i) { ID = i; }
+
+bool Particle::getCollisionStatus()
+{
+	return collisionStatus;
+}
+
+void Particle::setCollisionStatus(bool c) { collisionStatus = c; }
+
+float Particle::getRed() { return red; }
+float Particle::getGreen() { return green; }
+float Particle::getBlue() { return blue; }
+
+void Particle::setRed(float r) { red = r; }
+void Particle::setGreen(float g) { green = g; }
+void Particle::setBlue(float b) { blue = b; }

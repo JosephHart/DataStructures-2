@@ -16,8 +16,3 @@ public:
 	float getTimeinterval();
 	void setTimeinterval(float timeint);
  };
-
-
-
-    
-

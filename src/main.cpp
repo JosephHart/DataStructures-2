@@ -6,9 +6,9 @@ Application* app;
 
 
 void display(void)
-	{
+{
 	app->display();
-	}
+}
 
 
 void createWindow(const char* title, int h, int w)
@@ -20,11 +20,11 @@ void createWindow(const char* title, int h, int w)
 }
 
 void TimerFunc(int value)
-    {
+{
     app->update();
 	float  timeinterval = app->getTimeinterval();
 	glutTimerFunc(timeinterval, TimerFunc, 1);
-    }
+}
 
 
 void resize(int width, int height)
@@ -33,7 +33,7 @@ void resize(int width, int height)
 }
 
 int main(int argc, char* argv[])
-    {
+{
     glutInit(&argc, argv);
     app = getApplication();
 	float  timeinterval = 10;
@@ -46,4 +46,4 @@ int main(int argc, char* argv[])
 	glutMainLoop();
 	delete app; 
 	return 0;
-    }
+}

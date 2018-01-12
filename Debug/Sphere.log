@@ -1,0 +1,7 @@
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(363,5): warning MSB8004: Intermediate Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Intermediate Directory.
+C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(364,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
+  BlobDemo.cpp
+c:\users\joeis\documents\github\collisiondetection\src\blobdemo.cpp(17): warning C4305: 'argument' : truncation from 'double' to 'const float'
+c:\users\joeis\documents\github\collisiondetection\src\blobdemo.cpp(194): warning C4156: deletion of an array expression without using the array form of 'delete'; array form substituted
+c:\users\joeis\documents\github\collisiondetection\src\blobdemo.cpp(194): warning C4154: deletion of an array expression; conversion to pointer supplied
+  Sphere.vcxproj -> C:\Users\joeis\Documents\GitHub\CollisionDetection\Sphere\..\Debug\Sphere.exe

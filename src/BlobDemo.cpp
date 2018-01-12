@@ -9,8 +9,11 @@
 #include "pworld.h"
 #include <stdio.h>
 #include <cassert>
+#include <random>
+#include <time.h>
 
-
+//Number of Particles
+const int NoOfParticles = 20;
 const Vector2 Vector2::GRAVITY = Vector2(0,-9.81);
 
 /**
@@ -108,7 +111,7 @@ unsigned Platform::addContact(ParticleContact *contact,
 
 class BlobDemo : public Application
 {
-    Particle *blob;
+    Particle *blob[NoOfParticles];
 
     Platform *platform;
 
@@ -127,39 +130,62 @@ public:
 
     /** Update the particle positions. */
     virtual void update();
+
+	void box_collision_resolve(Particle &particle);
+	bool out_of_box_test(Particle particle);
+	void out_of_box_resolve(Particle &particle);
+	void particle_collision_test(Particle &particle);
+	void particle_collision_resolve(Particle &particle1, Particle &particle2);
 	
 };
 
 // Method definitions
 BlobDemo::BlobDemo():world(2, 1)
 {
-	width = 400; height = 400; 
+	width = 800; height = 800;
 	nRange = 100.0;
+	srand(time(NULL));
 
     // Create the blob storage
-    blob = new Particle;
+	for (int i = 0; i < NoOfParticles; i++)
+	{
+		blob[i] = new Particle;
+		float randomX = -nRange + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (nRange - -nRange)));
+		float randomY = -nRange + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (nRange - -nRange)));
+
+		// Create the blob
+		blob[i]->setPosition(randomX, randomY);
+		blob[i]->setVelocity(10, 10);
+		//blob[i]->setDamping(0.9);
+		blob[i]->setDamping(1.0);
+		blob[i]->setAcceleration(Vector2::GRAVITY * 20.0f);
+
+		float lowerMass = 1.0f;
+		float upperMass = 10.0f;
+		float randomMass = lowerMass + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (upperMass - lowerMass)));
+		blob[i]->setMass(randomMass);
+		blob[i]->setRed(1 / randomMass);
+		blob[i]->setBlue(randomMass / upperMass);
+		blob[i]->setRadius(randomMass / 2);
+
+		blob[i]->clearAccumulator();
+		blob[i]->setID(i);
+		blob[i]->setCollisionStatus(false);
+		world.getParticles().push_back(blob[i]);
+	}
 	   
     // Create the platform
 	platform = new Platform;
 	
-	platform->start = Vector2 ( -50.0, 0.0 );
-	platform->end   = Vector2 (  50.0, 0.0 );
+	//platform->start = Vector2 ( -50.0, 0.0 );
+	//platform->end   = Vector2 (  50.0, 0.0 );
 
     // Make sure the platform knows which particle it should collide with.
-    platform->particle = blob;
+   // platform->particle = blob;
 
-    world.getContactGenerators().push_back(platform);
+    //world.getContactGenerators().push_back(platform);
 
-    // Create the blob
-	blob->setPosition(0.0, 90.0);
-	blob->setRadius( 5 );
-    blob->setVelocity(0,0); 
-    //blob->setDamping(0.9);
-	blob->setDamping(1.0);
-    blob->setAcceleration(Vector2::GRAVITY * 20.0f ); 
-    blob->setMass(30.0f);
-    blob->clearAccumulator();
-    world.getParticles().push_back(blob);
+
 }
 
 
@@ -180,14 +206,17 @@ void BlobDemo::display()
    glVertex2f(p0.x, p0.y);
    glVertex2f(p1.x, p1.y);
    glEnd();
-	
-   glColor3f(1,0,0); 
 
-    const Vector2 &p = blob->getPosition();
-	glPushMatrix();
-	glTranslatef(p.x, p.y, 0);
-	glutSolidSphere(blob->getRadius(), 12, 12);
-	glPopMatrix();
+   for (int i = 0; i < NoOfParticles; i++)
+   {
+	   glColor3f(blob[i]->getRed(), blob[i]->getGreen(), blob[i]->getBlue());
+
+	   const Vector2 &p = blob[i]->getPosition();
+	   glPushMatrix();
+	   glTranslatef(p.x, p.y, 0);
+	   glutSolidSphere(blob[i]->getRadius(), 12, 12);
+	   glPopMatrix();
+   }
 
 	glutSwapBuffers();
     
@@ -199,6 +228,17 @@ void BlobDemo::update()
 	float duration = timeinterval/1000;
     // Run the simulation
     world.runPhysics(duration);
+
+	for (int i = 0; i < NoOfParticles; i++)
+	{
+		box_collision_resolve(*blob[i]);
+		if (out_of_box_test(*blob[i])) out_of_box_resolve(*blob[i]);
+		particle_collision_test(*blob[i]);
+	}
+	for (int i = 0; i < NoOfParticles; i++)
+	{
+		blob[i]->setCollisionStatus(false);
+	}
 
     Application::update();
 }
@@ -215,4 +255,119 @@ const char* BlobDemo::getTitle()
 Application* getApplication()
 {
     return new BlobDemo();
+}
+
+// detect if the particle colided with the box and produce a response
+void BlobDemo::box_collision_resolve(Particle &particle)
+{
+	Vector2 position = particle.getPosition();
+	Vector2 velocity = particle.getVelocity();
+	float radius = particle.getRadius();
+
+	float w = Application::width;
+	float h = Application::height;
+
+	// Reverse direction when you reach left or right edge
+	if (position.x> w - radius || position.x < -w + radius)
+		particle.setVelocity(-velocity.x, velocity.y);
+
+	if (position.y > h - radius || position.y < -h + radius)
+		particle.setVelocity(velocity.x, -velocity.y);
+}
+
+//  Check bounds. This is in case the window is made
+//  smaller while the sphere is bouncing and the 
+//  sphere suddenly finds itself outside the new
+//  clipping volume
+bool BlobDemo::out_of_box_test(Particle particle)
+{
+	Vector2 position = particle.getPosition();
+	Vector2 velocity = particle.getVelocity();
+	float radius = particle.getRadius();
+	if ((position.x > Application::width - radius) || (position.x < -Application::width + radius)) return true;
+	if ((position.y > Application::height - radius) || (position.y < -Application::height + radius)) return true;
+
+	return false;
+}
+
+//  Check bounds. This is in case the window is made
+//  smaller while the sphere is bouncing and the 
+//  sphere suddenly finds itself outside the new
+//  clipping volume
+void BlobDemo::out_of_box_resolve(Particle &particle)
+{
+	Vector2 position = particle.getPosition();
+	Vector2 velocity = particle.getVelocity();
+	float radius = particle.getRadius();
+
+
+	if (position.x > Application::width - radius)        position.x = Application::width - radius;
+	else if (position.x < -Application::width + radius)  position.x = -Application::width + radius;
+
+	if (position.y > Application::height - radius)        position.y = Application::height - radius;
+	else if (position.y < -Application::height + radius)  position.y = -Application::height + radius;
+
+	particle.setPosition(position.x, position.y);
+}
+
+void BlobDemo::particle_collision_test(Particle &particle)
+{
+	for (int i = 0; i < NoOfParticles; i++)
+	{
+		if (particle.getID() == blob[i]->getID() || particle.getCollisionStatus() == true || blob[i]->getCollisionStatus() == true)
+		{
+			//Do nothing if same particle
+			int test = 0;
+		}
+		else
+		{
+			Vector2 vecD = particle.getPosition() - blob[i]->getPosition();
+			float distance = sqrt(pow(vecD.x, 2) + pow(vecD.y, 2));
+
+			float sumRadius = particle.getRadius() + blob[i]->getRadius();
+			if (distance <= sumRadius)
+			{
+				Vector2 interpenetrationVec = particle.getPosition() - blob[i]->getPosition();
+
+				float penetration = (particle.getRadius() + blob[i]->getRadius()) - interpenetrationVec.magnitude();
+
+				interpenetrationVec.normalise();
+				interpenetrationVec *= penetration;
+
+				particle.setPosition(particle.getPosition() + interpenetrationVec * 0.5);
+				blob[i]->setPosition(blob[i]->getPosition() - interpenetrationVec * 0.5);
+
+				particle_collision_resolve(particle, *blob[i]);
+			}
+			//else no collision
+		}
+	}
+}
+
+void BlobDemo::particle_collision_resolve(Particle &particle1, Particle &particle2)
+{
+	Vector2 x = particle1.getPosition() - particle2.getPosition();
+	x.normalise();
+
+	//Sphere1
+	Vector2 v1 = particle1.getVelocity();
+	float x1 = x.scalarProduct(v1);
+	Vector2 v1x = x * x1;
+	Vector2 v1y = v1 - v1x;
+	float m1 = particle1.getMass();
+
+	//Sphere2
+	x = x * -1;
+	Vector2 v2 = particle2.getVelocity();
+	float x2 = x.scalarProduct(v2);
+	Vector2 v2x = x * x2;
+	Vector2 v2y = v2 - v2x;
+	float m2 = particle2.getMass();
+
+	//Calculate final velocities
+	particle1.setVelocity(v1x * ((m1 - m2) / (m1 + m2)) + v2x * ((2 * m2) / (m1 + m2)) + v1y);
+	particle2.setVelocity(v1x * ((2 * m1) / (m1 + m2)) + v2x * ((m2 - m1) / (m1 + m2)) + v2y);
+
+	particle1.setCollisionStatus(true);
+	particle2.setCollisionStatus(true);
 }

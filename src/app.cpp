@@ -43,7 +43,7 @@ void Application::update()
 }
 
 void Application::resize(int width, int height)
-	{
+{
     //nRange = 100.0f;
     GLfloat aspectRatio = (GLfloat)width / (GLfloat)height;
 
@@ -60,21 +60,21 @@ void Application::resize(int width, int height)
      //Establish clipping volume (left, right, bottom, top, near, far)
     if (width <= height) 
 	{
-	Application::width = nRange;
-    Application::height = nRange/aspectRatio;
+		Application::width = nRange;
+		Application::height = nRange/aspectRatio;
 		glOrtho (-nRange, nRange, -nRange/aspectRatio, nRange/aspectRatio, -nRange*2.0f, nRange*2.0f);
 	}
     else 
 	{
-	Application::width = nRange*aspectRatio;
-    Application::height = nRange;
-    glOrtho (-nRange*aspectRatio, nRange*aspectRatio, -nRange, nRange, -nRange*2.0f, nRange*2.0f);
+		Application::width = nRange*aspectRatio;
+		Application::height = nRange;
+		glOrtho (-nRange*aspectRatio, nRange*aspectRatio, -nRange, nRange, -nRange*2.0f, nRange*2.0f);
 	}
 
 	// Reset the modelview matrix
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	}
+}
 
 
 

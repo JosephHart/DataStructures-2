@@ -9,8 +9,8 @@
 #include "pcontacts.h"
 
 
-    class ParticleWorld
-    {
+class ParticleWorld
+{
     public:
         typedef std::vector<Particle*> Particles;
         typedef std::vector<ParticleContactGenerator*> ContactGenerators;
@@ -88,7 +88,7 @@
          */
         ContactGenerators& getContactGenerators();
 
-    };
+};
 
 
 
