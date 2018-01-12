@@ -1,4 +1,5 @@
-
+//Application header file
+//Self documenting
 class Application
 {
 protected:

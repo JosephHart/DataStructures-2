@@ -251,14 +251,5 @@ class Vector2
             x = -x;
             y = -y;
         }
-
     };
-
-    
- 
-
-   
-
-
-
 	#endif // CORE_H

@@ -9,68 +9,68 @@
 
 #include "coreMath.h"
 
-    class Particle
-    {
-    protected:
-
-	float inverseMass;
-	float damping;
-	float radius;
-    Vector2 position;
-	Vector2 velocity;
-	Vector2 forceAccum;
-	Vector2 acceleration;
-	int ID;
-	bool collisionStatus;
-	float red, green, blue;
+class Particle
+{
+protected:
+//Particle variables used to control all aspects of a particle
+//Self documenting
+float inverseMass;
+float damping;
+float radius;
+Vector2 position;
+Vector2 velocity;
+Vector2 forceAccum;
+Vector2 acceleration;
+int ID;
+bool collisionStatus;
+float red, green, blue;
     
-	public:
-		void integrate(float duration);
-		void setMass(const float mass);
-		float getMass() const;
-		void setInverseMass(const float inverseMass);
-		float getInverseMass() const;
-		bool hasFiniteMass() const;
+public:
+	//A long list of accessor and mutator methods, I do not need to comment on each of these
+	//Code here is in my opinion, self documenting
+	void integrate(float duration);
+	void setMass(const float mass);
+	float getMass() const;
+	void setInverseMass(const float inverseMass);
+	float getInverseMass() const;
+	bool hasFiniteMass() const;
 
-	    void setDamping(const float damping);
-        float getDamping() const;
+	void setDamping(const float damping);
+    float getDamping() const;
 
-        void setPosition(const float x, const float y);
-		void setPosition(const Vector2 &position);
-		Vector2 getPosition() const;
-		void getPosition(Vector2 *position) const;
+    void setPosition(const float x, const float y);
+	void setPosition(const Vector2 &position);
+	Vector2 getPosition() const;
+	void getPosition(Vector2 *position) const;
 		
-		void setRadius(const float r);
-		float getRadius() const;
+	void setRadius(const float r);
+	float getRadius() const;
 		
-		void setVelocity(const Vector2 &velocity);
-		void setVelocity(const float x, const float y);
-		Vector2 getVelocity() const;
-		void getVelocity(Vector2 *velocity) const;
+	void setVelocity(const Vector2 &velocity);
+	void setVelocity(const float x, const float y);
+	Vector2 getVelocity() const;
+	void getVelocity(Vector2 *velocity) const;
 
-		void setAcceleration(const Vector2 &acceleration);
-		void setAcceleration(const float x, const float y);
-		Vector2 getAcceleration() const;
+	void setAcceleration(const Vector2 &acceleration);
+	void setAcceleration(const float x, const float y);
+	Vector2 getAcceleration() const;
 
-		void clearAccumulator();
-		void addForce(const Vector2 &force);
+	void clearAccumulator();
+	void addForce(const Vector2 &force);
 
-		int getID();
-		void setID(int i);
+	int getID();
+	void setID(int i);
 
-		bool getCollisionStatus();
-		void setCollisionStatus(bool c);
+	bool getCollisionStatus();
+	void setCollisionStatus(bool c);
 
-		float getRed();
-		float getGreen();
-		float getBlue();
+	float getRed();
+	float getGreen();
+	float getBlue();
 
-		void setRed(float r);
-		void setGreen(float g);
-		void setBlue(float b);
-	
-       };
+	void setRed(float r);
+	void setGreen(float g);
+	void setBlue(float b);
+    };
 
-	#endif // 
-
-
+#endif // 

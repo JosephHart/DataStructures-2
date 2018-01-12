@@ -83,6 +83,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\app.cpp" />
     <ClCompile Include="..\src\BlobDemo.cpp" />
+    <ClCompile Include="..\src\collision.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\particle.cpp" />
     <ClCompile Include="..\src\pcontacts.cpp" />
@@ -90,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\app.h" />
+    <ClInclude Include="..\include\collision.h" />
     <ClInclude Include="..\include\coreMath.h" />
     <ClInclude Include="..\include\particle.h" />
     <ClInclude Include="..\include\pcontacts.h" />

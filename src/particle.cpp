@@ -1,13 +1,12 @@
-
 #include "particle.h"
 #include <math.h>
 #include <assert.h>
 #include <float.h>
 
-
+//Main force application section
+//Deals with forces applied to particles 
 void Particle::integrate(float duration)
 {
-
 	// We don't integrate things with zero mass.
    if (inverseMass <= 0.0f) return;
 
@@ -28,6 +27,9 @@ void Particle::integrate(float duration)
     clearAccumulator();
 }
 
+//Getters and Setters for the Particle class
+//I am not commenting on every single one as its a waste of time for you and me combined
+//This kind of code is entirely self documenting due to its extreme simplicity
 void Particle::setMass(const float mass)
 {
     assert(mass != 0);
@@ -43,126 +45,39 @@ float Particle::getMass() const
     }
 }
 
-void Particle::setInverseMass(const float inverseMass)
-{
-    Particle::inverseMass = inverseMass;
-}
+void Particle::setInverseMass(const float inverseMass) { Particle::inverseMass = inverseMass; }
+float Particle::getInverseMass() const { return inverseMass; }
+bool Particle::hasFiniteMass() const { return inverseMass >= 0.0f; }
 
-float Particle::getInverseMass() const
-{
-    return inverseMass;
-}
+void Particle::setDamping(const float damping) { Particle::damping = damping; }
+float Particle::getDamping() const { return damping; }
 
-bool Particle::hasFiniteMass() const
-{
-    return inverseMass >= 0.0f;
-}
+void Particle::setPosition(const float x, const float y) { position.x = x; position.y = y; }
+void Particle::setPosition(const Vector2 &position) { Particle::position = position; }
 
+Vector2 Particle::getPosition() const { return position; }
+void Particle::getPosition(Vector2 *position) const { *position = Particle::position; }
 
-void Particle::setDamping(const float damping)
-{
-    Particle::damping = damping;
-}
+void Particle::setRadius(const float r) { radius = r; }
+float Particle::getRadius() const { return radius; }
 
-float Particle::getDamping() const
-{
-    return damping;
-}
+void Particle::setVelocity(const float x, const float y) { velocity.x = x; velocity.y = y; }
+void Particle::setVelocity(const Vector2 &velocity) { Particle::velocity = velocity; }
+Vector2 Particle::getVelocity() const { return velocity; }
+void Particle::getVelocity(Vector2 *velocity) const { *velocity = Particle::velocity; }
 
-void Particle::setPosition(const float x, const float y)
-{
-    position.x = x;
-    position.y = y;
-}
+void Particle::setAcceleration(const Vector2 &acceleration) { Particle::acceleration = acceleration; }
+void Particle::setAcceleration(const float x, const float y) { acceleration.x = x; acceleration.y = y; }
+Vector2 Particle::getAcceleration() const { return acceleration; }
 
-void Particle::setPosition(const Vector2 &position)
-{
-	 Particle::position = position;
-}
+void Particle::clearAccumulator(){ forceAccum.clear(); }
 
+void Particle::addForce(const Vector2 &force) { forceAccum += force; }
 
-Vector2 Particle::getPosition() const
-{
-    return position;
-}
-
-void Particle::getPosition(Vector2 *position) const
-{
-    *position = Particle::position;
-}
-
-void Particle::setRadius(const float r)
-{
-    radius = r;
-}
-
-float Particle::getRadius() const
-{
-    return radius;
-}
-
-
-void Particle::setVelocity(const float x, const float y)
-{
-    velocity.x = x;
-    velocity.y = y;
-}
-
-void Particle::setVelocity(const Vector2 &velocity)
-{
-    Particle::velocity = velocity;
-}
-
-Vector2 Particle::getVelocity() const
-{
-    return velocity;
-}
-
-void Particle::getVelocity(Vector2 *velocity) const
-{
-    *velocity = Particle::velocity;
-}
-
-void Particle::setAcceleration(const Vector2 &acceleration)
-{
-    Particle::acceleration = acceleration;
-}
-
-
-void Particle::setAcceleration(const float x, const float y)
-{
-    acceleration.x = x;
-    acceleration.y = y;
-}
-
-Vector2 Particle::getAcceleration() const
-{
-    return acceleration;
-}
-
-
-void Particle::clearAccumulator()
-{
-    forceAccum.clear();
-}
-
-void Particle::addForce(const Vector2 &force)
-{
-    forceAccum += force;
-}
-
-int Particle::getID()
-{
-	return ID;
-}
-
+int Particle::getID() {	return ID; }
 void Particle::setID(int i) { ID = i; }
 
-bool Particle::getCollisionStatus()
-{
-	return collisionStatus;
-}
-
+bool Particle::getCollisionStatus() { return collisionStatus; }
 void Particle::setCollisionStatus(bool c) { collisionStatus = c; }
 
 float Particle::getRed() { return red; }
